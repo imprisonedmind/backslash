@@ -1,4 +1,7 @@
 import { DependencyList, useEffect, useState } from 'react'
+import { AlertTriangle } from 'lucide-react'
+import { toast as sonnerToast } from 'sonner'
+
 import { winElectron } from '@renderer/lib/utils'
 
 /**
@@ -88,4 +91,38 @@ export const useObserveSelectedOption = (commandResult: ResultT[]) => {
   }, [commandResult])
 
   return selectedValue
+}
+
+export const usePluginToasts = () => {
+  useEffect(() => {
+    if (!winElectron?.onPluginToast) return
+
+    const unsubscribe = winElectron.onPluginToast(({ type, title, description, duration }) => {
+      const toastOptions = { description, duration }
+
+      switch (type) {
+        case 'success':
+          sonnerToast.success(title, toastOptions)
+          break
+        case 'warning':
+          sonnerToast.warning(title, toastOptions)
+          break
+        case 'error':
+          sonnerToast.error(title, {
+            ...toastOptions,
+            icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
+            className: 'text-red-500 !gap-4',
+            descriptionClassName: 'text-red-400'
+          })
+          break
+        default:
+          sonnerToast(title, toastOptions)
+          break
+      }
+    })
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe()
+    }
+  }, [])
 }
