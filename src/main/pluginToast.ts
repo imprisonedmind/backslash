@@ -23,6 +23,10 @@ type ToastEmitter = (payload: PluginToastEvent) => void
 
 let toastEmitter: ToastEmitter | null = null
 
+/**
+ * Registers the renderer callback responsible for showing toast notifications.
+ * @param emitter - Function invoked with toast payloads.
+ */
 export const registerToastEmitter = (emitter: ToastEmitter) => {
   toastEmitter = emitter
 }
@@ -52,6 +56,9 @@ const createToastMethod =
     emitToast({ type, title, ...options })
   }
 
+/**
+ * Helpers exposed to plugins for triggering toast notifications.
+ */
 export const toast = {
   show: emitToast,
   info: createToastMethod('info'),
