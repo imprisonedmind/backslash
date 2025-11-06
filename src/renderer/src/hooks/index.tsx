@@ -93,6 +93,9 @@ export const useObserveSelectedOption = (commandResult: ResultT[]) => {
   return selectedValue
 }
 
+/**
+ * Subscribes to plugin toast events and displays Sonner notifications.
+ */
 export const usePluginToasts = () => {
   useEffect(() => {
     if (!winElectron?.onPluginToast) return
