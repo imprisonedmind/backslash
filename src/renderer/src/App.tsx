@@ -1,4 +1,4 @@
-import { useState, useRef, KeyboardEvent } from 'react'
+import { useState, useRef, KeyboardEvent, useCallback } from 'react'
 
 import { Command, CommandInput, CommandList } from '@renderer/elements/Command'
 import { CommandEmpty, CommandShortcut } from '@renderer/elements/Command'
@@ -7,7 +7,7 @@ import { Commands } from '@renderer/components/Commands'
 import { CommandPage } from '@renderer/components/CommandPage'
 import { CommandApplications } from '@renderer/components/CommandApplications'
 import { CommandShortcuts } from '@renderer/components/CommandShortcuts'
-import { useScrollToTop } from '@renderer/hooks'
+import { usePluginSearch, useScrollToTop } from '@renderer/hooks'
 import { Settings } from '@renderer/components/Settings'
 
 const App = () => {
@@ -16,7 +16,11 @@ const App = () => {
   const commandListRef = useRef<HTMLDivElement | null>(null)
   const [currentBangName, setCurrentBangName] = useState<string | null>(null)
 
+  const handlePluginClearSearch = useCallback(() => {
+    setCommandSearch('')
+  }, [setCommandSearch])
   useScrollToTop(commandListRef, [commandSearch])
+  usePluginSearch(handlePluginClearSearch)
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape') {
       e.preventDefault()

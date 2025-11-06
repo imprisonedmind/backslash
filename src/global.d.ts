@@ -31,6 +31,7 @@ declare global {
     getDisabledPlugins: () => Promise<string[]>
     getHotkeys: () => Promise<{ [key: string]: string }>
     setHotkey: (type: string, hotkey: string) => Promise<void>
+    onPluginSearch: (callback: (event: PluginSearchEvent) => void) => () => void
     showMainWindow: () => Promise<void>
     hideMainWindow: () => Promise<void>
     reloadApp: () => Promise<void>
@@ -89,6 +90,10 @@ declare global {
   type ActionT = {
     action: (param?: string) => void
     name: string
+  }
+
+  type PluginSearchEvent = {
+    action: 'clear'
   }
 
   type ManifestT = {

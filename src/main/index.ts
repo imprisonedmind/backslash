@@ -21,6 +21,7 @@ import {
   setHotkey
 } from './handlers'
 import { setupAutoUpdater } from './autoUpdater'
+import { registerSearchEmitter } from './pluginSearch'
 
 let mainWindow: BrowserWindow
 const gotTheLock = app.requestSingleInstanceLock()
@@ -120,6 +121,10 @@ if (!gotTheLock) {
     })
 
     await createWindow()
+    registerSearchEmitter((event) => {
+      if (!mainWindow) return
+      mainWindow.webContents.send('plugin-search', event)
+    })
     await registerGlobalShortcut()
     createTray()
 

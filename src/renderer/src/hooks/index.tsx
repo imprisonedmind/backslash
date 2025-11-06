@@ -89,3 +89,23 @@ export const useObserveSelectedOption = (commandResult: ResultT[]) => {
 
   return selectedValue
 }
+
+/**
+ * Subscribes to plugin search events and runs the provided handler.
+ * @param onClear - Callback fired when the plugin requests clearing the search input.
+ */
+export const usePluginSearch = (onClear: () => void) => {
+  useEffect(() => {
+    if (!winElectron?.onPluginSearch) return
+
+    const unsubscribe = winElectron.onPluginSearch((event) => {
+      if (event.action === 'clear') {
+        onClear()
+      }
+    })
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe()
+    }
+  }, [onClear])
+}

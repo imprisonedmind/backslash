@@ -10,6 +10,8 @@ import yaml from 'js-yaml'
 import ini from 'ini'
 import { readdir, readFile } from 'fs/promises'
 
+import { search } from './pluginSearch'
+
 storage.setDataPath(os.tmpdir())
 
 const DIRECTORIES = [
@@ -39,7 +41,8 @@ const DEPS = {
   clipboard,
   exec,
   shell,
-  path
+  path,
+  search
 }
 
 /**
