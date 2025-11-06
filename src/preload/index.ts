@@ -49,6 +49,14 @@ if (process.contextIsolated) {
       getDisabledPlugins: () => {
         return ipcRenderer.invoke('get-disabled-plugins')
       },
+      onPluginToast: (callback) => {
+        const channel = 'plugin-toast'
+        const subscription = (_event, payload) => callback(payload)
+        ipcRenderer.on(channel, subscription)
+        return () => {
+          ipcRenderer.removeListener(channel, subscription)
+        }
+      },
       onPluginSearch: (callback) => {
         const channel = 'plugin-search'
         const subscription = (_event, payload) => callback(payload)

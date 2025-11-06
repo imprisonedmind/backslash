@@ -9,7 +9,7 @@ import cheerio from 'cheerio'
 import yaml from 'js-yaml'
 import ini from 'ini'
 import { readdir, readFile } from 'fs/promises'
-
+import { toast } from './pluginToast'
 import { search } from './pluginSearch'
 
 storage.setDataPath(os.tmpdir())
@@ -42,6 +42,7 @@ const DEPS = {
   exec,
   shell,
   path,
+  toast,
   search
 }
 
@@ -91,6 +92,7 @@ interface Application {
   command: string
   isImmediate: boolean
 }
+
 const parseDesktopFile = (content: string, filePath: string): Application | null => {
   try {
     const parsed = ini.parse(content)
@@ -279,7 +281,7 @@ export const runPluginAction = async (
  * canceled.
  */
 export const choosePluginsDir = async () => {
-  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+  const result = await dialog.showOpenDialog({properties: ['openDirectory']})
 
   if (!result.canceled && result.filePaths.length > 0) {
     const newPath = result.filePaths[0]

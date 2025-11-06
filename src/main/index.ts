@@ -20,6 +20,7 @@ import {
   setDisabledPlugins,
   setHotkey
 } from './handlers'
+import { registerToastEmitter } from './pluginToast'
 import { setupAutoUpdater } from './autoUpdater'
 import { registerSearchEmitter } from './pluginSearch'
 
@@ -121,6 +122,10 @@ if (!gotTheLock) {
     })
 
     await createWindow()
+    registerToastEmitter((payload) => {
+      if (!mainWindow) return
+      mainWindow.webContents.send('plugin-toast', payload)
+    })
     registerSearchEmitter((event) => {
       if (!mainWindow) return
       mainWindow.webContents.send('plugin-search', event)

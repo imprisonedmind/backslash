@@ -7,8 +7,9 @@ import { Commands } from '@renderer/components/Commands'
 import { CommandPage } from '@renderer/components/CommandPage'
 import { CommandApplications } from '@renderer/components/CommandApplications'
 import { CommandShortcuts } from '@renderer/components/CommandShortcuts'
-import { usePluginSearch, useScrollToTop } from '@renderer/hooks'
+import { usePluginSearch, usePluginToasts, useScrollToTop } from '@renderer/hooks'
 import { Settings } from '@renderer/components/Settings'
+import { Toaster } from 'sonner'
 
 const App = () => {
   const [selectedCommand, setSelectedCommand] = useState<CommandT | null>(null)
@@ -18,7 +19,9 @@ const App = () => {
 
   const handlePluginClearSearch = useCallback(() => {
     setCommandSearch('')
-  }, [setCommandSearch])
+  }, [])
+
+  usePluginToasts()
   useScrollToTop(commandListRef, [commandSearch])
   usePluginSearch(handlePluginClearSearch)
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -38,6 +41,8 @@ const App = () => {
 
   return (
     <div className="bg-black h-full">
+      <Toaster position="bottom-right" theme="dark" richColors />
+
       {!selectedCommand && (
         <Command filter={commandFilter} loop>
           <div className="flex items-center gap-2 px-3 border-b border-zinc-800">

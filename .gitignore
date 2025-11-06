@@ -3,3 +3,7 @@ dist
 out
 .DS_Store
 *.log*
+
+# IDE project files
+.idea/
+*.iml
