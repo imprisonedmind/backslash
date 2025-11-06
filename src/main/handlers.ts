@@ -1,14 +1,15 @@
-import { app, clipboard, dialog, shell } from 'electron'
+import {app, clipboard, dialog, shell} from 'electron'
 import os from 'os'
 import storage from 'electron-json-storage'
 import fs from 'fs'
 import path from 'path'
-import { exec } from 'child_process'
+import {exec} from 'child_process'
 import axios from 'axios'
 import cheerio from 'cheerio'
 import yaml from 'js-yaml'
 import ini from 'ini'
-import { readdir, readFile } from 'fs/promises'
+import {readdir, readFile} from 'fs/promises'
+import {toast} from './pluginToast'
 
 storage.setDataPath(os.tmpdir())
 
@@ -39,7 +40,8 @@ const DEPS = {
   clipboard,
   exec,
   shell,
-  path
+  path,
+  toast
 }
 
 /**
@@ -88,6 +90,7 @@ interface Application {
   command: string
   isImmediate: boolean
 }
+
 const parseDesktopFile = (content: string, filePath: string): Application | null => {
   try {
     const parsed = ini.parse(content)
@@ -276,7 +279,7 @@ export const runPluginAction = async (
  * canceled.
  */
 export const choosePluginsDir = async () => {
-  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] })
+  const result = await dialog.showOpenDialog({properties: ['openDirectory']})
 
   if (!result.canceled && result.filePaths.length > 0) {
     const newPath = result.filePaths[0]

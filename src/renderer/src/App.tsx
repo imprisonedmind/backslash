@@ -1,4 +1,5 @@
-import { useState, useRef, KeyboardEvent } from 'react'
+import { useEffect, useState, useRef, KeyboardEvent } from 'react'
+import { AlertTriangle } from 'lucide-react'
 
 import { Command, CommandInput, CommandList } from '@renderer/elements/Command'
 import { CommandEmpty, CommandShortcut } from '@renderer/elements/Command'
@@ -9,12 +10,45 @@ import { CommandApplications } from '@renderer/components/CommandApplications'
 import { CommandShortcuts } from '@renderer/components/CommandShortcuts'
 import { useScrollToTop } from '@renderer/hooks'
 import { Settings } from '@renderer/components/Settings'
+import { winElectron } from '@renderer/lib/utils'
+import { Toaster, toast as sonnerToast } from 'sonner'
 
 const App = () => {
   const [selectedCommand, setSelectedCommand] = useState<CommandT | null>(null)
   const [commandSearch, setCommandSearch] = useState('')
   const commandListRef = useRef<HTMLDivElement | null>(null)
   const [currentBangName, setCurrentBangName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!winElectron?.onPluginToast) return
+
+    const unsubscribe = winElectron.onPluginToast(({ type, title, description, duration }) => {
+      const toastOptions = { description, duration }
+
+      switch (type) {
+        case 'success':
+          sonnerToast.success(title, toastOptions)
+          break
+        case 'warning':
+          sonnerToast.warning(title, toastOptions)
+          break
+        case 'error':
+          sonnerToast.error(title, {
+            ...toastOptions,
+            icon: <AlertTriangle  />,
+            className: '!gap-4',
+          })
+          break
+        default:
+          sonnerToast(title, toastOptions)
+          break
+      }
+    })
+
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe()
+    }
+  }, [])
 
   useScrollToTop(commandListRef, [commandSearch])
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -34,6 +68,7 @@ const App = () => {
 
   return (
     <div className="bg-black h-full">
+      <Toaster position="bottom-right" theme="dark" richColors  />
       {!selectedCommand && (
         <Command filter={commandFilter} loop>
           <div className="flex items-center gap-2 px-3 border-b border-zinc-800">

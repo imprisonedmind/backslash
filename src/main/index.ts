@@ -20,6 +20,7 @@ import {
   setDisabledPlugins,
   setHotkey
 } from './handlers'
+import { registerToastEmitter } from './pluginToast'
 import { setupAutoUpdater } from './autoUpdater'
 
 let mainWindow: BrowserWindow
@@ -120,6 +121,10 @@ if (!gotTheLock) {
     })
 
     await createWindow()
+    registerToastEmitter((payload) => {
+      if (!mainWindow) return
+      mainWindow.webContents.send('plugin-toast', payload)
+    })
     await registerGlobalShortcut()
     createTray()
 

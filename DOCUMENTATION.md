@@ -34,3 +34,28 @@ A Backslash plugin is a simple module that you can add to extend Backslash's fun
 1. **Because you can**. You're a Linux user, you already solve your problems with shell scripts. Why not make them pretty with Backslash?
 2. **Automation**. If you're doing the same repetitive tasks, turn them into a plugin, and let Backslash handle it.
 3. **Sharing is caring**. Once you've built something cool, share it with the rest of the Linux community. (They might even use it!)
+
+## Advanced Tips
+
+### Showing Toast Notifications
+
+Need to give users a heads-up? Plugins receive a `toast` helper that lets you trigger Sonner notifications in the app:
+
+```js
+module.exports = {
+  commands: {
+    'demo-command': {
+      run: async (_, { toast }) => {
+        try {
+          await doSomething()
+          toast.success('Done!', { description: 'Everything worked.' })
+        } catch (error) {
+          toast.error('Uh oh', { description: error.message })
+        }
+      }
+    }
+  }
+}
+```
+
+Available helpers: `toast.show({ title, description, type, duration })`, `toast.success`, `toast.info`, `toast.warning`, and `toast.error`.

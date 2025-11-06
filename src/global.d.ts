@@ -31,6 +31,7 @@ declare global {
     getDisabledPlugins: () => Promise<string[]>
     getHotkeys: () => Promise<{ [key: string]: string }>
     setHotkey: (type: string, hotkey: string) => Promise<void>
+    onPluginToast: (callback: (payload: PluginToastPayload) => void) => () => void
     showMainWindow: () => Promise<void>
     hideMainWindow: () => Promise<void>
     reloadApp: () => Promise<void>
@@ -84,6 +85,13 @@ declare global {
   type ResultT = {
     content: ResultContentT[]
     data: Record<string, string>
+  }
+
+  type PluginToastPayload = {
+    type: 'success' | 'info' | 'warning' | 'error'
+    title: string
+    description?: string
+    duration?: number
   }
 
   type ActionT = {
