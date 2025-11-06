@@ -34,3 +34,24 @@ A Backslash plugin is a simple module that you can add to extend Backslash's fun
 1. **Because you can**. You're a Linux user, you already solve your problems with shell scripts. Why not make them pretty with Backslash?
 2. **Automation**. If you're doing the same repetitive tasks, turn them into a plugin, and let Backslash handle it.
 3. **Sharing is caring**. Once you've built something cool, share it with the rest of the Linux community. (They might even use it!)
+
+## Advanced Tips
+
+### Clearing the Search Input
+
+Want the search box to reset after a successful command? Use the `search` helper that Backslash passes into every plugin:
+
+```js
+module.exports = {
+  commands: {
+    'player-ctl-play': {
+      run: async (_, { exec, search }) => {
+        await exec('playerctl play')
+        search.clear()
+      }
+    }
+  }
+}
+```
+
+If you're targeting older Backslash versions, no worries—the helper is optional. Calling `search.clear()` simply does nothing when the renderer doesn't support it yet.
