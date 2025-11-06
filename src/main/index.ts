@@ -20,9 +20,8 @@ import {
   setDisabledPlugins,
   setHotkey
 } from './handlers'
-import { registerToastEmitter } from './pluginToast'
 import { setupAutoUpdater } from './autoUpdater'
-import { registerSearchEmitter } from './pluginSearch'
+import { registerPluginEmitters } from './pluginEvents'
 
 let mainWindow: BrowserWindow
 const gotTheLock = app.requestSingleInstanceLock()
@@ -122,14 +121,7 @@ if (!gotTheLock) {
     })
 
     await createWindow()
-    registerToastEmitter((payload) => {
-      if (!mainWindow) return
-      mainWindow.webContents.send('plugin-toast', payload)
-    })
-    registerSearchEmitter((event) => {
-      if (!mainWindow) return
-      mainWindow.webContents.send('plugin-search', event)
-    })
+    registerPluginEmitters(() => mainWindow ?? null)
     await registerGlobalShortcut()
     createTray()
 
